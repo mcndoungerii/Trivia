@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Trivia</string>
     <string name="trivia_title_text">Trivia</string>
     <string name="question_title_text">Question: 45/913</string>
 </resources>
