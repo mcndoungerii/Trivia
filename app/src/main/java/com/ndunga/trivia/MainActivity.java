@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.ndunga.trivia.data.Repository;
 import com.ndunga.trivia.databinding.ActivityMainBinding;
 import com.ndunga.trivia.model.Question;
@@ -29,7 +31,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding.setQuestion(quest);
 
-        questionList = new Repository().getQuestion( questionArrayList -> binding.questionTextView.setText(questionArrayList.get(currentQuestionIndex).getAnswer()));
+        questionList = new Repository().getQuestion( questionArrayList -> {
+            binding.questionTextView.setText(questionArrayList.get(currentQuestionIndex).getAnswer());
+            updateCounter();
+
+        });
 
         binding.buttonNext.setOnClickListener(view -> {
             currentQuestionIndex = (currentQuestionIndex + 1) % questionList.size();
@@ -40,15 +46,29 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        binding.trueButton.setOnClickListener(view -> {
+        binding.trueButton.setOnClickListener(view -> checkAnswer(true));
 
-        });
-
-        binding.falseButton.setOnClickListener(view -> {
-
-        });
+        binding.falseButton.setOnClickListener(view ->checkAnswer(false));
 
 
+    }
+
+    private void checkAnswer(boolean userChoiceAns) {
+        boolean answerFromApi = questionList.get(currentQuestionIndex).isAnswerTrue();
+        int snackIndex ;
+        if(userChoiceAns == answerFromApi) {
+            snackIndex = R.string.correct_answer;
+
+        }
+        else {
+            snackIndex = R.string.incorrect_answer;
+        }
+
+        Snackbar.make(binding.cardView,snackIndex,Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void updateCounter() {
+        binding.counterView.setText(String.format("%s %d/%d", getString(R.string.counter_text), currentQuestionIndex, questionList.size()));
     }
 
     private void updateQuestion() {
@@ -56,5 +76,6 @@ public class MainActivity extends AppCompatActivity {
         String question = questionList.get(currentQuestionIndex).getAnswer();
 
         binding.questionTextView.setText(question);
+        updateCounter();
     }
 }
