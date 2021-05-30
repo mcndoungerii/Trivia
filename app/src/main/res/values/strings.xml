@@ -5,4 +5,5 @@
     <string name="true_btn_text">True</string>
     <string name="false_btn_text">False</string>
     <string name="next_btn_text">Next</string>
+    <string name="question_text">Hello world. This is where we are going to add the actual text to be shown!</string>
 </resources>
