@@ -2,4 +2,7 @@
 <resources>
     <string name="trivia_title_text">Trivia</string>
     <string name="question_title_text">Question: 45/913</string>
+    <string name="true_btn_text">True</string>
+    <string name="false_btn_text">False</string>
+    <string name="next_btn_text">Next</string>
 </resources>
