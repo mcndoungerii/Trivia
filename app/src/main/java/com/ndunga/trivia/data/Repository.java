@@ -18,7 +18,7 @@ public class Repository {
     private ArrayList<Question> questionArrayList = new ArrayList<>();
     String url = "https://raw.githubusercontent.com/curiousily/simple-quiz/master/script/statements-data.json";
 
-    public List<Question> getQuestion(){
+    public List<Question> getQuestion(final answerListAsyncResponse callback){
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
@@ -28,7 +28,7 @@ public class Repository {
                             JSONArray jsonArray = response.getJSONArray(i);
 
                             Question question = new Question(jsonArray.getString(0),jsonArray.getBoolean(1));
-                            Log.d("Question::::", String.valueOf(question));
+
                             //add question object to ArrayList
                             questionArrayList.add(question);
                         } catch (JSONException e) {
@@ -37,11 +37,18 @@ public class Repository {
 
                     }
 
+                    //add this after the loop
+                    if(null != callback) {
+                        callback.processFinished(questionArrayList);
+                    }
+
                 }, error -> {
             Log.d("Error::::",error.toString());
         });
 
         AppController.getInstance().addToRequestQueue(jsonArrayRequest);
+
+
         return questionArrayList;
     }
 

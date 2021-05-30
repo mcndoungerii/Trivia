@@ -11,10 +11,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.ndunga.trivia.controller.AppController;
 import com.ndunga.trivia.data.Repository;
+import com.ndunga.trivia.model.Question;
 
 import org.json.JSONArray;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new Repository().getQuestion();
+        List<Question> question = new Repository().getQuestion( questionArrayList -> {
+            Log.d("Question::::", String.valueOf(questionArrayList));
+        });
+
+
     }
 }
