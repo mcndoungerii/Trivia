@@ -7,6 +7,9 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.ndunga.trivia.controller.AppController;
 import com.ndunga.trivia.model.Question;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,14 +22,27 @@ public class Repository {
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
-                    Log.d("Repo::::",response.toString());
+                    for (int i = 0; i < response.length() ; i++) {
+
+                        try {
+                            JSONArray jsonArray = response.getJSONArray(i);
+
+                            Question question = new Question(jsonArray.getString(0),jsonArray.getBoolean(1));
+                            Log.d("Question::::", String.valueOf(question));
+                            //add question object to ArrayList
+                            questionArrayList.add(question);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
 
                 }, error -> {
             Log.d("Error::::",error.toString());
         });
 
         AppController.getInstance().addToRequestQueue(jsonArrayRequest);
-        return null;
+        return questionArrayList;
     }
 
 }
