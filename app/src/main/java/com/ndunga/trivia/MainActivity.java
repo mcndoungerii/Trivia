@@ -3,7 +3,9 @@ package com.ndunga.trivia;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -12,6 +14,7 @@ import com.ndunga.trivia.data.Repository;
 import com.ndunga.trivia.databinding.ActivityMainBinding;
 import com.ndunga.trivia.model.Question;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         questionList = new Repository().getQuestion( questionArrayList -> {
             binding.questionTextView.setText(questionArrayList.get(currentQuestionIndex).getAnswer());
-            updateCounter();
+            updateCounter((ArrayList<Question>) questionArrayList);
 
         });
 
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         int snackIndex ;
         if(userChoiceAns == answerFromApi) {
             snackIndex = R.string.correct_answer;
-
+            fadeAnimation();
         }
         else {
             snackIndex = R.string.incorrect_answer;
@@ -77,14 +80,61 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(binding.cardView,snackIndex,Snackbar.LENGTH_SHORT).show();
     }
 
+    private void fadeAnimation() {
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f,0.0f);
+
+        alphaAnimation.setDuration(300);
+        alphaAnimation.setRepeatCount(1);
+        alphaAnimation.setRepeatMode(Animation.REVERSE);
+
+        binding.questionTextView.setAnimation(alphaAnimation);
+
+        //Listen to animation events
+        alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                binding.questionTextView.setTextColor(Color.GREEN);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                binding.questionTextView.setTextColor(Color.WHITE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+
     private void shakeAnimation() {
         Animation shake = AnimationUtils.loadAnimation(this,R.anim.shake_animation);
 
         binding.cardView.setAnimation(shake);
+
+        shake.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                binding.questionTextView.setTextColor(Color.RED);
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                binding.questionTextView.setTextColor(Color.WHITE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 
-    private void updateCounter() {
-        binding.counterView.setText(String.format("%s %d/%d", getString(R.string.counter_text), currentQuestionIndex, questionList.size()));
+    private void updateCounter(ArrayList<Question> questionArrayList) {
+        binding.counterView.setText(String.format("%s %d/%d", getString(R.string.counter_text), currentQuestionIndex, questionArrayList.size()));
     }
 
     private void updateQuestion() {
@@ -92,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         String question = questionList.get(currentQuestionIndex).getAnswer();
 
         binding.questionTextView.setText(question);
-        updateCounter();
+        updateCounter((ArrayList<Question>) questionList);
     }
 
 
