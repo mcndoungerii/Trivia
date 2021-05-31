@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.ndunga.trivia.data.Repository;
@@ -46,9 +48,16 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        binding.trueButton.setOnClickListener(view -> checkAnswer(true));
+        binding.trueButton.setOnClickListener(view -> {
+            checkAnswer(true);
+            updateQuestion();
 
-        binding.falseButton.setOnClickListener(view ->checkAnswer(false));
+        });
+
+        binding.falseButton.setOnClickListener(view -> {
+            checkAnswer(false);
+            updateQuestion();
+        });
 
 
     }
@@ -62,9 +71,16 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             snackIndex = R.string.incorrect_answer;
+            shakeAnimation();
         }
 
         Snackbar.make(binding.cardView,snackIndex,Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void shakeAnimation() {
+        Animation shake = AnimationUtils.loadAnimation(this,R.anim.shake_animation);
+
+        binding.cardView.setAnimation(shake);
     }
 
     private void updateCounter() {
@@ -78,4 +94,6 @@ public class MainActivity extends AppCompatActivity {
         binding.questionTextView.setText(question);
         updateCounter();
     }
+
+
 }
