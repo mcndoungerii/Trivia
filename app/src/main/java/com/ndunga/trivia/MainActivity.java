@@ -16,6 +16,7 @@ import com.ndunga.trivia.data.Repository;
 import com.ndunga.trivia.databinding.ActivityMainBinding;
 import com.ndunga.trivia.model.Question;
 import com.ndunga.trivia.model.Score;
+import com.ndunga.trivia.utils.Prefs;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Score score;
 
+    private Prefs prefs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +55,22 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        //create score object
+        score = new Score();
+        prefs = new Prefs(this);
+
         binding.buttonNext.setOnClickListener(view -> {
             currentQuestionIndex = (currentQuestionIndex + 1) % questionList.size();
 
             //% questionList.size() -- helps us to avoid the error ArrayOutBoundIndex
 
             updateQuestion();
+
+            //save to disk
+            prefs.saveHighestScore(score.getScore());
+
+            //check the saved Score
+            Log.d("GET:::", String.valueOf(prefs.getHighestScore()));
 
         });
 
@@ -74,9 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //create score object
-        score = new Score();
-        retrieveScore();
+
         binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
 
 
@@ -167,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
     private void addPoints() {
         scoreCounter += 100;
         score.setScore(scoreCounter);
-        saveScore(scoreCounter);
+        //saveScore(scoreCounter);
         binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
 
     }
@@ -178,38 +189,38 @@ public class MainActivity extends AppCompatActivity {
         if(scoreCounter > 0) {
             scoreCounter -= 100;
             score.setScore(scoreCounter);
-            saveScore(scoreCounter);
+            //saveScore(scoreCounter);
             binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
 
         }
         else {
             scoreCounter = 0;
             score.setScore(scoreCounter);
-            saveScore(scoreCounter);
+            //saveScore(scoreCounter);
             binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
 
         }
     }
 
-    private void saveScore(int scoreCounter) {
-        //save to shared prefs
-        SharedPreferences sharedPreferences = getSharedPreferences(MESSAGE_ID,MODE_PRIVATE);
+//    private void saveScore(int scoreCounter) {
+//        //save to shared prefs
+//        SharedPreferences sharedPreferences = getSharedPreferences(MESSAGE_ID,MODE_PRIVATE);
+//
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//        editor.putInt("score_counter",scoreCounter);
+//
+//        editor.apply();
+//    }
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putInt("score_counter",scoreCounter);
-
-        editor.apply();
-    }
-
-    private void retrieveScore() {
-        //get sharedData
-        SharedPreferences getSharedData = getSharedPreferences(MESSAGE_ID,MODE_PRIVATE);
-
-        int value = getSharedData.getInt("score_counter",0);
-
-        binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
-    }
+//    private void retrieveScore() {
+//        //get sharedData
+//        SharedPreferences getSharedData = getSharedPreferences(MESSAGE_ID,MODE_PRIVATE);
+//
+//        int value = getSharedData.getInt("score_counter",0);
+//
+//        binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
+//    }
 
 
 }

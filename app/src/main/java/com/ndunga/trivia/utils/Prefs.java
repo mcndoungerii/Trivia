@@ -12,7 +12,7 @@ public class Prefs {
         this.preferences = context.getPreferences(Context.MODE_PRIVATE);
     }
 
-    private void saveHighestScore(int score){
+    public void saveHighestScore(int score){
         int currentScore = score;
 
         int lastScore = preferences.getInt(HIGHEST_SCORE,0);
@@ -23,7 +23,7 @@ public class Prefs {
         }
     }
 
-    private int getHighestScore() {
+    public int getHighestScore() {
         return preferences.getInt(HIGHEST_SCORE,0);
     }
 }
