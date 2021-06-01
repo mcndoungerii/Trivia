@@ -59,6 +59,11 @@ public class MainActivity extends AppCompatActivity {
         score = new Score();
         prefs = new Prefs(this);
 
+        //check the saved Score
+        Log.d("onCreate:::", String.valueOf(prefs.getHighestScore()));
+
+        binding.highScoreText.setText(MessageFormat.format("Highest: {0}", String.valueOf(prefs.getHighestScore())));
+
         binding.buttonNext.setOnClickListener(view -> {
             currentQuestionIndex = (currentQuestionIndex + 1) % questionList.size();
 
@@ -66,11 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
             updateQuestion();
 
-            //save to disk
-            prefs.saveHighestScore(score.getScore());
-
-            //check the saved Score
-            Log.d("GET:::", String.valueOf(prefs.getHighestScore()));
 
         });
 
@@ -223,4 +223,14 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
 
+    @Override
+    protected void onPause() {
+
+        //save to disk
+        prefs.saveHighestScore(score.getScore());
+
+        //check the saved Score
+        Log.d("Pause:::", String.valueOf(prefs.getHighestScore()));
+        super.onPause();
+    }
 }
