@@ -59,19 +59,11 @@ public class MainActivity extends AppCompatActivity {
         score = new Score();
         prefs = new Prefs(this);
 
-        //check the saved Score
-        Log.d("onCreate:::", String.valueOf(prefs.getHighestScore()));
 
         binding.highScoreText.setText(MessageFormat.format("Highest: {0}", String.valueOf(prefs.getHighestScore())));
 
         binding.buttonNext.setOnClickListener(view -> {
-            currentQuestionIndex = (currentQuestionIndex + 1) % questionList.size();
-
-            //% questionList.size() -- helps us to avoid the error ArrayOutBoundIndex
-
-            updateQuestion();
-
-
+            getNextQuestion();
         });
 
         binding.trueButton.setOnClickListener(view -> {
@@ -91,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
         binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
 
 
+    }
+
+    private void getNextQuestion() {
+        currentQuestionIndex = (currentQuestionIndex + 1) % questionList.size();
+
+        updateQuestion();
     }
 
     private void checkAnswer(boolean userChoiceAns) {
@@ -129,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 binding.questionTextView.setTextColor(Color.WHITE);
+                getNextQuestion();
             }
 
             @Override
@@ -154,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 binding.questionTextView.setTextColor(Color.WHITE);
+                getNextQuestion();
             }
 
             @Override
