@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -13,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.ndunga.trivia.data.Repository;
 import com.ndunga.trivia.databinding.ActivityMainBinding;
 import com.ndunga.trivia.model.Question;
+import com.ndunga.trivia.model.Score;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
     private final Question quest = new Question();
 
     List<Question> questionList;
+
+    private int scoreCounter = 0;
+
+    private Score score;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
             updateQuestion();
         });
 
+        //create score object
+        score = new Score();
+
 
     }
 
@@ -71,10 +81,12 @@ public class MainActivity extends AppCompatActivity {
         if(userChoiceAns == answerFromApi) {
             snackIndex = R.string.correct_answer;
             fadeAnimation();
+            addPoints();
         }
         else {
             snackIndex = R.string.incorrect_answer;
             shakeAnimation();
+            deductPoints();
         }
 
         Snackbar.make(binding.cardView,snackIndex,Snackbar.LENGTH_SHORT).show();
@@ -143,6 +155,28 @@ public class MainActivity extends AppCompatActivity {
 
         binding.questionTextView.setText(question);
         updateCounter((ArrayList<Question>) questionList);
+    }
+
+    private void addPoints() {
+        scoreCounter += 100;
+        score.setScore(scoreCounter);
+        binding.scoreCounter.setText(String.valueOf(score.getScore()));
+
+    }
+
+    private  void  deductPoints(){
+        if(scoreCounter > 0) {
+            scoreCounter -= 100;
+            score.setScore(scoreCounter);
+
+            binding.scoreCounter.setText(String.valueOf(score.getScore()));
+        }
+        else {
+            scoreCounter = 0;
+            score.setScore(scoreCounter);
+
+            binding.scoreCounter.setText(String.valueOf(score.getScore()));
+        }
     }
 
 
