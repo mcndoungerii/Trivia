@@ -72,11 +72,12 @@ public class MainActivity extends AppCompatActivity {
             updateQuestion();
         });
 
-        binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
+
 
         //create score object
         score = new Score();
         retrieveScore();
+        binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
 
 
     }
