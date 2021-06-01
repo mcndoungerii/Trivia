@@ -3,6 +3,7 @@ package com.ndunga.trivia;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,12 +17,14 @@ import com.ndunga.trivia.databinding.ActivityMainBinding;
 import com.ndunga.trivia.model.Question;
 import com.ndunga.trivia.model.Score;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
 
+    private static final String MESSAGE_ID = "score_prefs";
     private ActivityMainBinding binding;
 
     private int currentQuestionIndex = 0;
@@ -69,8 +72,11 @@ public class MainActivity extends AppCompatActivity {
             updateQuestion();
         });
 
+        binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
+
         //create score object
         score = new Score();
+        retrieveScore();
 
 
     }
@@ -160,23 +166,48 @@ public class MainActivity extends AppCompatActivity {
     private void addPoints() {
         scoreCounter += 100;
         score.setScore(scoreCounter);
-        binding.scoreCounter.setText(String.valueOf(score.getScore()));
+        saveScore(scoreCounter);
+        binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
 
     }
+
+
 
     private  void  deductPoints(){
         if(scoreCounter > 0) {
             scoreCounter -= 100;
             score.setScore(scoreCounter);
+            saveScore(scoreCounter);
+            binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
 
-            binding.scoreCounter.setText(String.valueOf(score.getScore()));
         }
         else {
             scoreCounter = 0;
             score.setScore(scoreCounter);
+            saveScore(scoreCounter);
+            binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
 
-            binding.scoreCounter.setText(String.valueOf(score.getScore()));
         }
+    }
+
+    private void saveScore(int scoreCounter) {
+        //save to shared prefs
+        SharedPreferences sharedPreferences = getSharedPreferences(MESSAGE_ID,MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putInt("score_counter",scoreCounter);
+
+        editor.apply();
+    }
+
+    private void retrieveScore() {
+        //get sharedData
+        SharedPreferences getSharedData = getSharedPreferences(MESSAGE_ID,MODE_PRIVATE);
+
+        int value = getSharedData.getInt("score_counter",0);
+
+        binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
     }
 
 
