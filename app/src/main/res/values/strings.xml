@@ -11,4 +11,5 @@
     <string name="counter_text">Question:</string>
     <string name="score_counter_0">Score Counter: 0</string>
     <string name="high_score_text">Highest:</string>
+    <string name="send_btn_text">Send</string>
 </resources>

@@ -3,10 +3,12 @@ package com.ndunga.trivia;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -59,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
         score = new Score();
         prefs = new Prefs(this);
 
+        //GET currentIndex
+        currentQuestionIndex = prefs.getState();
+
 
         binding.highScoreText.setText(MessageFormat.format("Highest: {0}", String.valueOf(prefs.getHighestScore())));
 
@@ -82,7 +87,13 @@ public class MainActivity extends AppCompatActivity {
 
         binding.scoreCounter.setText(String.valueOf(MessageFormat.format("Score Counter: {0}", score.getScore())));
 
-
+        binding.sendButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, MessageFormat.format("My current score: {0}, And my highest is: {1}", score.getScore(), prefs.getHighestScore()));
+            intent.putExtra(Intent.EXTRA_SUBJECT,"I am playing Trivia");
+            startActivity(intent);
+        });
     }
 
     private void getNextQuestion() {
@@ -228,6 +239,9 @@ public class MainActivity extends AppCompatActivity {
 
         //save to disk
         prefs.saveHighestScore(score.getScore());
+
+        //save currentIndex
+        prefs.setState(currentQuestionIndex);
 
         //check the saved Score
         Log.d("Pause:::", String.valueOf(prefs.getHighestScore()));
